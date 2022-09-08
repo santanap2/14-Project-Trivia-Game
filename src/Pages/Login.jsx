@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import fetchToken from '../helpers/triviaApi';
+import { userLogin } from '../redux/actions';
 
-export default class Login extends Component {
+class Login extends Component {
   state = {
     nameInput: '',
     emailInput: '',
@@ -15,10 +17,12 @@ export default class Login extends Component {
   };
 
   fetchButtonSubmit = async (event) => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    const { nameInput, emailInput } = this.state;
     event.preventDefault();
     const response = await fetchToken();
     localStorage.setItem('token', response.token);
+    dispatch(userLogin({ name: nameInput, email: emailInput }));
     history.push('/game');
   };
 
@@ -95,4 +99,7 @@ Login.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
+
+export default connect()(Login);
