@@ -1,10 +1,25 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import fetchToken from '../helpers/triviaApi';
 
 export default class Login extends Component {
   state = {
     nameInput: '',
     emailInput: '',
     isDisabled: true,
+  };
+
+  redirectToSettings = () => {
+    const { history } = this.props;
+    history.push('/settings');
+  };
+
+  fetchButtonSubmit = async (event) => {
+    const { history } = this.props;
+    event.preventDefault();
+    const response = await fetchToken();
+    localStorage.setItem('token', response.token);
+    history.push('/game');
   };
 
   checkButton = () => {
@@ -32,6 +47,13 @@ export default class Login extends Component {
     const { nameInput, emailInput, isDisabled } = this.state;
     return (
       <div>
+        <button
+          type="button"
+          data-testid="btn-settings"
+          onClick={ this.redirectToSettings }
+        >
+          Configurações
+        </button>
         <form className="login-container">
           <label htmlFor="nameInput">
             <p>Nome</p>
@@ -59,11 +81,18 @@ export default class Login extends Component {
             type="submit"
             data-testid="btn-play"
             disabled={ isDisabled }
+            onClick={ this.fetchButtonSubmit }
           >
-            Entrar
+            Play
           </button>
         </form>
       </div>
     );
   }
 }
+
+Login.propTypes = {
+  history: PropTypes.shape({
+    push: PropTypes.func.isRequired,
+  }).isRequired,
+};
