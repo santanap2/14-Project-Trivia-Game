@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import fetchToken from '../helpers/triviaApi';
+import { fetchToken } from '../helpers/triviaApi';
 import { userLogin } from '../redux/actions';
 
 class Login extends Component {
