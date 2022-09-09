@@ -1,25 +1,38 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import './Question.css';
 
 const RANDOM = 0.5;
 
 export default class Question extends Component {
+  state = {
+    correct: '',
+    wrong: '',
+  };
+
   checkAnswer = ({ target }) => {
-    if (target.name === "correct-answer") {
-      console.log("Você acertou, parabéns!!");
+    if (target.name === 'correct-answer') {
+      console.log('Acertô mizeravi');
     } else {
-      console.log("Que burrro, da zero pra ele");
+      console.log('Que burrro, da zero pra ele');
     }
+    this.setState({
+      correct: 'correct',
+      wrong: 'wrong',
+    });
   };
 
   render() {
-    const { questions } = this.props;
+    const { question } = this.props;
+    const { correct, wrong } = this.state;
     let answers = [];
-    if (questions.length > 0 && questions[0]) {
+    if (question) {
       answers = [
-        ...questions[0].incorrect_answers.map((answer, index) => (
+        ...question.incorrect_answers.map((answer, index) => (
           <button
             key={ index }
             type="button"
+            className={ wrong }
             name="incorrect-answer"
             onClick={ this.checkAnswer }
             data-testid={ `wrong-answer-${index}` }
@@ -31,27 +44,38 @@ export default class Question extends Component {
           key="correct-answer"
           type="button"
           name="correct-answer"
+          className={ correct }
           onClick={ this.checkAnswer }
           data-testid="correct-answer"
         >
-          {questions[0].correct_answer}
+          {question.correct_answer}
         </button>,
-      ];
+      ].sort(() => Math.random() - RANDOM);
     }
     return (
       <div>
         <h3 data-testid="question-category">
-          {questions.length > 0 && questions[0].category}
+          {question && question.category}
         </h3>
         <p data-testid="question-text">
-          {questions.length > 0 && questions[0].question}
+          {question && question.question}
         </p>
         {answers.length > 0 && (
           <div data-testid="answer-options">
-            { answers.sort(() => Math.random() - RANDOM) }
+            { answers }
           </div>
         ) }
       </div>
     );
   }
 }
+
+Question.propTypes = {
+  question: PropTypes.shape(),
+};
+
+Question.defaultProps = {
+  question: {
+    incorrect_answers: [],
+  },
+};

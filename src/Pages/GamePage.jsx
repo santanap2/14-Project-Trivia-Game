@@ -5,7 +5,6 @@ import { fetchQuestions } from '../helpers/triviaApi';
 import Question from '../components/Question';
 
 const ERROR_CODE = 3;
-
 export default class GamePage extends Component {
   state = {
     questions: [],
@@ -31,7 +30,11 @@ export default class GamePage extends Component {
       <>
         <Header />
         <section>
-          <Question questions={ questions } />
+          {questions && (
+            <Question
+              question={ questions[0] }
+            />
+          )}
         </section>
       </>
     );
