@@ -37,7 +37,7 @@ class Question extends Component {
         timer: 30,
         isDisable: false,
         answers: [...question.incorrect_answers, question.correct_answer]
-          .sort(() => Math.random() - RANDOM),
+          .sort(() => RANDOM - Math.random()),
       });
     }
   }
