@@ -3,12 +3,38 @@ import PropTypes from 'prop-types';
 import './Question.css';
 
 const RANDOM = 0.5;
+const ONE_SECOND = 1000;
 
 export default class Question extends Component {
   state = {
     correct: '',
     wrong: '',
+    timer: 30,
+    isDisable: false,
   };
+
+  componentDidMount() {
+    this.intervalID = setInterval(() => {
+      this.setState((prevState) => ({ timer: prevState.timer - 1 }));
+    }, ONE_SECOND);
+    // console.log(this.intervalID);
+  }
+
+  componentDidUpdate() {
+    const { timer } = this.state;
+    console.log(timer);
+    if (timer === 1) {
+      clearInterval(this.intervalID);
+      this.setState({
+        isDisable: true,
+        timer: 30,
+      });
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
 
   checkAnswer = ({ target }) => {
     if (target.name === 'correct-answer') {
@@ -24,7 +50,7 @@ export default class Question extends Component {
 
   render() {
     const { question } = this.props;
-    const { correct, wrong } = this.state;
+    const { correct, wrong, isDisable } = this.state;
     let answers = [];
     if (question) {
       answers = [
@@ -36,6 +62,7 @@ export default class Question extends Component {
             name="incorrect-answer"
             onClick={ this.checkAnswer }
             data-testid={ `wrong-answer-${index}` }
+            disabled={ isDisable }
           >
             {answer}
           </button>
@@ -47,6 +74,7 @@ export default class Question extends Component {
           className={ correct }
           onClick={ this.checkAnswer }
           data-testid="correct-answer"
+          disabled={ isDisable }
         >
           {question.correct_answer}
         </button>,
