@@ -5,11 +5,11 @@ import img from '../trivia.png';
 
 class Header extends Component {
   render() {
-    const { user } = this.props;
+    const { user, player } = this.props;
     return (
       <header>
         <img src={ img } alt="" width="100px" />
-        <p data-testid="header-score">0</p>
+        <p data-testid="header-score">{ player.score }</p>
         <div>
           <img
             data-testid="header-profile-picture"
@@ -23,12 +23,16 @@ class Header extends Component {
   }
 }
 
-const mapStateToProps = ({ user }) => ({
+const mapStateToProps = ({ user, player }) => ({
   user,
+  player,
 });
 
 Header.propTypes = {
   user: PropTypes.shape().isRequired,
+  player: PropTypes.shape({
+    score: PropTypes.number.isRequired,
+  }).isRequired,
 };
 
 export default connect(mapStateToProps)(Header);

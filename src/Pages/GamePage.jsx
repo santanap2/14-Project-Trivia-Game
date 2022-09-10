@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { Redirect } from 'react-router-dom';
 import Header from '../components/Header';
 import { fetchQuestions } from '../helpers/triviaApi';
 import Question from '../components/Question';
+import { nextRound } from '../redux/actions';
 
 const ERROR_CODE = 3;
-export default class GamePage extends Component {
+class GamePage extends Component {
   state = {
     questions: [],
   };
@@ -24,25 +27,53 @@ export default class GamePage extends Component {
     }
   }
 
+  dispatchNextRound = () => {
+    const { dispatch } = this.props;
+    dispatch(nextRound());
+  };
+
   render() {
+    const maxRounds = 5;
     const { questions } = this.state;
+    const { game } = this.props;
     return (
       <>
+        { game.round >= maxRounds && <Redirect to="/feedback" /> }
         <Header />
         <section>
           {questions && (
             <Question
-              question={ questions[0] }
+              question={ questions[game.round] }
             />
           )}
         </section>
+        { game.countAnswered > game.round && (
+          <button
+            type="button"
+            onClick={ () => this.dispatchNextRound() }
+            data-testid="btn-next"
+          >
+            Next
+          </button>
+        )}
       </>
     );
   }
 }
 
 GamePage.propTypes = {
+  game: PropTypes.shape({
+    round: PropTypes.number.isRequired,
+    countAnswered: PropTypes.number.isRequired,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
 };
+
+const mapStateToProps = ({ game }) => ({
+  game,
+});
+
+export default connect(mapStateToProps)(GamePage);
