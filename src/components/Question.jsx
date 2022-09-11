@@ -51,10 +51,7 @@ class Question extends Component {
     const { timer, answered } = this.state;
     const level = { hard: 3, medium: 2, easy: 1 };
     if (!answered && answer === question.correct_answer) {
-      console.log('Acertô mizeravi');
       dispatch(updateScore(timer, level[question.difficulty]));
-    } else {
-      console.log('Que burrro, da zero pra ele');
     }
     if (!answered) {
       dispatch(countAnswered());
