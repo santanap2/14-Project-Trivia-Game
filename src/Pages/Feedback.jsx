@@ -2,16 +2,32 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import Header from '../components/Header';
+import { newGame } from '../redux/actions';
 
 class Feedback extends React.Component {
+  componentDidMount() {
+    const { user, player } = this.props;
+    this.saveToRanking({
+      name: user.name,
+      score: player.score,
+      picture: user.gravatar,
+    });
+  }
+
   handlePlayAgainClick = () => {
-    const { history } = this.props;
+    const { history, dispatch } = this.props;
+    dispatch(newGame());
     history.push('/');
   };
 
   handleRankingClick = () => {
     const { history } = this.props;
     history.push('/ranking');
+  };
+
+  saveToRanking = (player) => {
+    const currentRanking = JSON.parse(localStorage.getItem('ranking'));
+    localStorage.setItem('ranking', JSON.stringify([...currentRanking, player]));
   };
 
   render() {
@@ -56,10 +72,16 @@ Feedback.propTypes = {
   history: PropTypes.shape({
     push: PropTypes.func.isRequired,
   }).isRequired,
+  user: PropTypes.shape({
+    gravatar: PropTypes.string,
+    name: PropTypes.string,
+  }).isRequired,
+  dispatch: PropTypes.func.isRequired,
 };
 
-const mapStateToProps = ({ player }) => ({
+const mapStateToProps = ({ player, user }) => ({
   player,
+  user,
 });
 
 export default connect(mapStateToProps)(Feedback);

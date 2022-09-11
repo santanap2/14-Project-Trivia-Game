@@ -1,4 +1,4 @@
-import { FAIL_FECTH, NEXT_ROUND, COUNT_ANSWERED } from '../actions';
+import { FAIL_FECTH, NEXT_ROUND, COUNT_ANSWERED, NEW_GAME } from '../actions';
 
 const INITIAL_STATE = {
   error: '',
@@ -22,6 +22,12 @@ const gameReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       countAnswered: state.countAnswered + 1,
+    };
+  case NEW_GAME:
+    return {
+      ...state,
+      round: 0,
+      countAnswered: 0,
     };
   default: return state;
   }

@@ -5,6 +5,7 @@ export const FAIL_FECTH = 'FAIL_FECTH';
 export const UPDATE_SCORE = 'UPDATE_SCORE';
 export const NEXT_ROUND = 'NEXT_ROUND';
 export const COUNT_ANSWERED = 'COUNT_ANSWERED';
+export const NEW_GAME = 'NEW_GAME';
 
 export const userLogin = ({ name, email }) => {
   const userData = md5(email).toString();
@@ -23,7 +24,6 @@ export const failFecth = (error) => ({
 
 export const updateScore = (timer, level) => {
   const valuesoma = 10;
-  console.log('update score!');
   return {
     type: UPDATE_SCORE,
     score: valuesoma + timer * level,
@@ -36,4 +36,8 @@ export const nextRound = () => ({
 
 export const countAnswered = () => ({
   type: COUNT_ANSWERED,
+});
+
+export const newGame = () => ({
+  type: NEW_GAME,
 });
