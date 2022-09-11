@@ -4,9 +4,14 @@ import { connect } from 'react-redux';
 import Header from '../components/Header';
 
 class Feedback extends React.Component {
-  handleClick = () => {
+  handlePlayAgainClick = () => {
     const { history } = this.props;
     history.push('/');
+  };
+
+  handleRankingClick = () => {
+    const { history } = this.props;
+    history.push('/ranking');
   };
 
   render() {
@@ -16,7 +21,7 @@ class Feedback extends React.Component {
       <div data-testid="feedback-page">
         <Header />
         <h1>pagina de feedback</h1>
-        <h3 data-testid="feedback-total-score">{player.score ? player.score : 0 }</h3>
+        <h3 data-testid="feedback-total-score">{player.score}</h3>
         <p data-testid="feedback-text">
           { player.assertions < goodScore ? 'Could be better...' : 'Well Done!' }
         </p>
@@ -27,10 +32,16 @@ class Feedback extends React.Component {
         <button
           type="submit"
           data-testid="btn-play-again"
-          onClick={ this.handleClick }
+          onClick={ this.handlePlayAgainClick }
         >
           Play Again
-
+        </button>
+        <button
+          data-testid="btn-ranking"
+          type="submit"
+          onClick={ this.handleRankingClick }
+        >
+          Ranking
         </button>
       </div>
     );
