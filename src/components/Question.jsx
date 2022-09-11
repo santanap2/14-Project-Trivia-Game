@@ -1,33 +1,43 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
+import { updateScore, countAnswered } from '../redux/actions';
 import './Question.css';
 
 const RANDOM = 0.5;
 const ONE_SECOND = 1000;
 
-export default class Question extends Component {
+class Question extends Component {
   state = {
-    correct: '',
-    wrong: '',
+    answered: false,
     timer: 30,
     isDisable: false,
+    answers: [],
   };
 
   componentDidMount() {
     this.intervalID = setInterval(() => {
       this.setState((prevState) => ({ timer: prevState.timer - 1 }));
     }, ONE_SECOND);
-    // console.log(this.intervalID);
   }
 
-  componentDidUpdate() {
+  componentDidUpdate(prevProps) {
+    const { question } = this.props;
     const { timer } = this.state;
-    console.log(timer);
     if (timer === 1) {
       clearInterval(this.intervalID);
       this.setState({
         isDisable: true,
         timer: 30,
+      });
+    }
+    if (question.question !== prevProps.question.question) {
+      this.setState({
+        answered: false,
+        timer: 30,
+        isDisable: false,
+        answers: [...question.incorrect_answers, question.correct_answer]
+          .sort(() => RANDOM - Math.random()),
       });
     }
   }
@@ -36,50 +46,27 @@ export default class Question extends Component {
     clearInterval(this.intervalID);
   }
 
-  checkAnswer = ({ target }) => {
-    if (target.name === 'correct-answer') {
+  checkAnswer = (answer) => {
+    const { question, dispatch } = this.props;
+    const { timer, answered } = this.state;
+    const level = { hard: 3, medium: 2, easy: 1 };
+    if (!answered && answer === question.correct_answer) {
       console.log('Acertô mizeravi');
+      dispatch(updateScore(timer, level[question.difficulty]));
     } else {
       console.log('Que burrro, da zero pra ele');
     }
+    if (!answered) {
+      dispatch(countAnswered());
+    }
     this.setState({
-      correct: 'correct',
-      wrong: 'wrong',
+      answered: true,
     });
   };
 
   render() {
     const { question } = this.props;
-    const { correct, wrong, isDisable } = this.state;
-    let answers = [];
-    if (question) {
-      answers = [
-        ...question.incorrect_answers.map((answer, index) => (
-          <button
-            key={ index }
-            type="button"
-            className={ wrong }
-            name="incorrect-answer"
-            onClick={ this.checkAnswer }
-            data-testid={ `wrong-answer-${index}` }
-            disabled={ isDisable }
-          >
-            {answer}
-          </button>
-        )),
-        <button
-          key="correct-answer"
-          type="button"
-          name="correct-answer"
-          className={ correct }
-          onClick={ this.checkAnswer }
-          data-testid="correct-answer"
-          disabled={ isDisable }
-        >
-          {question.correct_answer}
-        </button>,
-      ].sort(() => Math.random() - RANDOM);
-    }
+    const { isDisable, answered, answers } = this.state;
     return (
       <div>
         <h3 data-testid="question-category">
@@ -90,7 +77,22 @@ export default class Question extends Component {
         </p>
         {answers.length > 0 && (
           <div data-testid="answer-options">
-            { answers }
+            { answers.map((answer, index) => {
+              const isCorrect = answer === question.correct_answer;
+              const correctness = isCorrect ? 'correct' : 'wrong';
+              return (
+                <button
+                  key={ index }
+                  type="button"
+                  className={ answered ? correctness : 'not-answered' }
+                  onClick={ () => this.checkAnswer(answer) }
+                  data-testid={ isCorrect ? 'correct-answer' : 'wrong-answer' }
+                  disabled={ isDisable }
+                >
+                  {answer}
+                </button>
+              );
+            })}
           </div>
         ) }
       </div>
@@ -99,6 +101,7 @@ export default class Question extends Component {
 }
 
 Question.propTypes = {
+  dispatch: PropTypes.func.isRequired,
   question: PropTypes.shape(),
 };
 
@@ -107,3 +110,5 @@ Question.defaultProps = {
     incorrect_answers: [],
   },
 };
+
+export default connect()(Question);
