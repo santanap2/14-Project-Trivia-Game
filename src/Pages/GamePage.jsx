@@ -25,6 +25,9 @@ class GamePage extends Component {
         questions: data.results,
       });
     }
+    if (!JSON.parse(localStorage.getItem('ranking'))) {
+      localStorage.setItem('ranking', JSON.stringify([]));
+    }
   }
 
   dispatchNextRound = () => {

@@ -1,8 +1,8 @@
-import { UPDATE_SCORE } from '../actions/index';
+import { NEW_GAME, UPDATE_SCORE } from '../actions/index';
 
 const INITIAL_STATE = {
   score: 0,
-  countCorrected: 0,
+  assertions: 0,
 };
 
 const playerReducer = (state = INITIAL_STATE, action) => {
@@ -11,9 +11,14 @@ const playerReducer = (state = INITIAL_STATE, action) => {
     return {
       ...state,
       score: state.score + action.score,
-      countCorrected: state.countCorrected + 1,
+      assertions: state.assertions + 1,
     };
-
+  case NEW_GAME:
+    return {
+      ...state,
+      score: 0,
+      assertions: 0,
+    };
   default: return state;
   }
 };
