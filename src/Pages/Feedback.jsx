@@ -27,7 +27,7 @@ class Feedback extends React.Component {
 
   saveToRanking = (player) => {
     const currentRanking = JSON.parse(localStorage.getItem('ranking'));
-    localStorage.setItem('ranking', JSON.stringify([...currentRanking, player]));
+    localStorage.setItem('ranking', JSON.stringify([...currentRanking||[], player]));
   };
 
   render() {
