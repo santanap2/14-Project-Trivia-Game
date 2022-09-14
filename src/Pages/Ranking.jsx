@@ -38,7 +38,7 @@ class Ranking extends Component {
             {ranking.length > 0 && (
               ranking.sort((a, b) => b.score - a.score)
                 .map((player, index) => (
-                  <tr key={ index }>
+                  <tr data-testid="ranking-player" key={ index }>
                     <td>{index + 1}</td>
                     <td><img src={ player.picture } alt="gravatar" /></td>
                     <td data-testid={ `player-name-${index}` }>{player.name}</td>
