@@ -13,7 +13,6 @@ const INITIAL_STATE = {
     name: "Player 1",
     assertions: 2,
     score: 150,
-    gravatarEmail: "email@email.com",
   },
 };
 
